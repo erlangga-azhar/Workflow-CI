@@ -41,6 +41,6 @@ jobs:
         run: |
           cd MLProject
           RUN_ID=$(cat run_id.txt)
-          # Ganti env-manager dari conda menjadi pip untuk menghindari error ToS Anaconda
-          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest --env-manager=pip
+          # Ganti ke virtualenv. Ini tidak pakai Anaconda, jadi aman dari ToS Error!
+          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest --env-manager=virtualenv
           docker push ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
