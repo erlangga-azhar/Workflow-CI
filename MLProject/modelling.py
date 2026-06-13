@@ -24,7 +24,11 @@ def train_model():
     with run:
         rf = RandomForestClassifier(random_state=42)
         rf.fit(X_train, y_train)
-        mlflow.sklearn.log_model(rf, "model")
+        mlflow.sklearn.log_model(
+            sk_model=rf, 
+            artifact_path="model",
+            pip_requirements="requirements.txt" 
+        )
         
         # Simpan ID ke file agar Docker bisa baca
         with open("run_id.txt", "w") as f:

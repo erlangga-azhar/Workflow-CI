@@ -41,6 +41,9 @@ jobs:
         run: |
           cd MLProject
           RUN_ID=$(cat run_id.txt)
-          # Ganti ke virtualenv. Ini tidak pakai Anaconda, jadi aman dari ToS Error!
-          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest --env-manager=virtualenv
+          # --env-manager=local + --build-arg akan membuat MLflow menggunakan environment yang sudah ada
+          mlflow models build-docker \
+            -m runs:/$RUN_ID/model \
+            -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest \
+            --env-manager=local
           docker push ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
