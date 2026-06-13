@@ -41,6 +41,6 @@ jobs:
         run: |
           cd MLProject
           RUN_ID=$(cat run_id.txt)
-          # Ganti ke conda, ini yang paling stabil buat build Docker di MLflow
-          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest --env-manager=conda
+          # Ganti env-manager dari conda menjadi pip untuk menghindari error ToS Anaconda
+          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest --env-manager=pip
           docker push ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
