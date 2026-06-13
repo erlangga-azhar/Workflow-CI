@@ -1,4 +1,4 @@
-name: Continuous Integration MLflow
+name: CI Pipeline
 
 on:
   push:
@@ -20,12 +20,12 @@ jobs:
         run: |
           pip install mlflow==2.19.0 pandas scikit-learn
 
-      - name: Run MLflow Script
+      - name: Run Python Script
         run: |
           cd MLProject
           python modelling.py
 
-      - name: Upload Artifact to GitHub (Skilled)
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: mlruns-artifacts
@@ -37,9 +37,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build and Push Docker Image (Advance)
+      - name: Build and Push Docker
         run: |
           cd MLProject
+          # Kita ambil ID dari file yang dibuat modelling.py
           RUN_ID=$(cat run_id.txt)
           mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
