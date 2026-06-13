@@ -23,7 +23,7 @@ jobs:
       - name: Run MLflow Script
         run: |
           cd MLProject
-          python modelling.py           
+          python modelling.py
 
       - name: Upload Artifact to GitHub (Skilled)
         uses: actions/upload-artifact@v4
