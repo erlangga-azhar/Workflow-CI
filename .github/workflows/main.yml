@@ -40,7 +40,7 @@ jobs:
       - name: Build and Push Docker
         run: |
           cd MLProject
-          # Kita ambil ID dari file yang dibuat modelling.py
           RUN_ID=$(cat run_id.txt)
-          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
+          # Ganti ke conda, ini yang paling stabil buat build Docker di MLflow
+          mlflow models build-docker -m runs:/$RUN_ID/model -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest --env-manager=conda
           docker push ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
