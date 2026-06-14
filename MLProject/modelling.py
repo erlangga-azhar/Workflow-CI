@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import mlflow
 from sklearn.ensemble import RandomForestClassifier
@@ -10,8 +11,6 @@ def train_model():
     y = df['survived']
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    # Cek apakah MLflow sudah buat run otomatis (karena MLproject atau backend lain)
-    # Kalau sudah ada, pakai itu. Kalau belum, buat baru.
     active_run = mlflow.active_run()
     
     if active_run:
@@ -30,11 +29,15 @@ def train_model():
             pip_requirements="requirements.txt" 
         )
         
-        # Simpan ID ke file agar Docker bisa baca
-        with open("run_id.txt", "w") as f:
+        # --- BAGIAN PENYELAMAT ---
+        # Tarik environment path asli dari GitHub Actions agar tidak nyasar ke folder temp
+        workspace = os.getenv("GITHUB_WORKSPACE", os.getcwd())
+        run_id_file = os.path.join(workspace, "run_id.txt")
+        
+        with open(run_id_file, "w") as f:
             f.write(run.info.run_id)
             
-        print(f"Selesai! Run ID: {run.info.run_id}")
+        print(f"Selesai! Run ID: {run.info.run_id} berhasil diselamatkan ke {run_id_file}")
 
 if __name__ == "__main__":
     train_model()

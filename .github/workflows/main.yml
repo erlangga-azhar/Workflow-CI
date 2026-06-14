@@ -21,13 +21,16 @@ jobs:
           pip install mlflow==2.19.0 pandas scikit-learn
 
       - name: Run training model with MLflow
+        # Jalanin dari root, MLflow bakal baca MLProject/MLproject
+        # Folder 'mlruns' dan 'run_id.txt' otomatis terbuat di root
         run: mlflow run MLProject --env-manager=local
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: mlruns-artifacts
-          path: MLProject/mlruns/
+          # Path diubah karena mlruns ada di root, bukan di dalam MLProject
+          path: mlruns/
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -37,11 +40,14 @@ jobs:
 
       - name: Build and Push Docker
         run: |
-          cd MLProject
+          # NGGAK PERLU 'cd MLProject' lagi, karena run_id.txt ada di root!
           RUN_ID=$(cat run_id.txt)
-          # --env-manager=local + --build-arg akan membuat MLflow menggunakan environment yang sudah ada
+          echo "Menggunakan Run ID: $RUN_ID"
+          
+          # MLflow akan membaca folder mlruns/ yang sejajar di root
           mlflow models build-docker \
             -m runs:/$RUN_ID/model \
             -n ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest \
             --env-manager=local
+            
           docker push ${{ secrets.DOCKER_USERNAME }}/titanic-model:latest
