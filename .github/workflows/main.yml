@@ -20,10 +20,8 @@ jobs:
         run: |
           pip install mlflow==2.19.0 pandas scikit-learn
 
-      - name: Run Python Script
-        run: |
-          cd MLProject
-          python modelling.py
+      - name: Run training model with MLflow
+        run: mlflow run MLProject --env-manager=local
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
